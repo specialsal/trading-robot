@@ -42,7 +42,6 @@ def dealMsg(message):
                 notifyService = NotifyService(msg)
                 notifyService.sendMessageToWeiXin()
                 if message['o']['ot'] == "STOP_MARKET":
-                    time.sleep(16 * 60)
                     deleteAllOrder(symbol)
                     deleteAllPosition(symbol)
                     for i in range(piece):
