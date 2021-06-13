@@ -1,6 +1,7 @@
 import hmac
-import requests
+import hashlib
 import websocket
+import requests
 from config import *
 from strategy import dealMsg
 
@@ -8,7 +9,12 @@ from strategy import dealMsg
 def on_message(ws, message):
     message = json.loads(message)
     print(message)
-    dealMsg(ws, message)
+    if message['e'] == "listenKeyExpired":
+        print('listenKey过期')
+        ws.close()
+        listen()
+    else:
+        dealMsg(message)
 
 
 def on_error(ws, error):

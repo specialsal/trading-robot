@@ -1,7 +1,6 @@
 import hashlib
 import hmac
 import requests
-import time
 from config import *
 
 
