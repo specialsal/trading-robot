@@ -124,7 +124,8 @@ def order(symbol, side, positionSide, type, quantity, price, stopPrice='', activ
     response = requests.post('https://' + host + method + '?' + msg + '&signature=' + signature,
                              headers=headers)
     content = json.loads(response.content)
-    print('挂单成功 ', 'price ', price, 'stopPrice ', stopPrice)
+    msg = '挂单成功 ' + 'price ' + price + 'stopPrice ' + stopPrice
+    print(msg)
     print(content)
     if 'orderId' in content:
         return {'orderId': content['orderId'], 'status': content['status']}

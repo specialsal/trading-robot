@@ -1,3 +1,5 @@
+# 这个策略是简单的依靠噪声波动来赚钱，止盈1.25%，止损5%，随机开多开空，然后亏损一单就清仓重新开始
+
 import random
 from notify import NotifyService
 from binanceApi import *
@@ -7,9 +9,6 @@ try:
     import thread
 except ImportError:
     import _thread as thread
-
-
-init_balance = getBalance()  # 初始资产
 
 
 def dealMsg(message):
@@ -24,7 +23,6 @@ def dealMsg(message):
                 print(e)
             globalVar['orderMap'].pop(message['o']['i'])
             if message['o']['ot'] == "STOP_MARKET" or message['o']['ot'] == "LIMIT":
-                _type = ''
                 if message['o']['ot'] == "STOP_MARKET":
                     globalVar['loss_count'] += 1
                 elif message['o']['ot'] == "LIMIT":
@@ -32,9 +30,8 @@ def dealMsg(message):
                 msg = '\n'.join(
                     ['盈利次数: ' + str(globalVar['profit_count']) + ' 次',
                      '亏损次数: ' + str(globalVar['loss_count']) + ' 次',
-                     '目前开多概率: ' + str(globalVar['pivot']),
                      '总运行时长: ' + str(round((time.time() - init_time) / 3600, 2)) + ' 小时',
-                     '总盈亏: ' + str(globalVar['balance'] - init_balance) + ' U',
+                     '总盈亏: ' + str(globalVar['balance'] - globalVar['init_balance']) + ' U',
                      '本次开仓时长: ' + str(round((time.time() - globalVar['this_time']) / 3600, 2)) + ' 小时',
                      '本单盈亏: ' + str(message['o']['rp']) + ' U'])
                 globalVar['this_time'] = time.time()
@@ -99,38 +96,42 @@ def bounce(symbol):
     level(symbol, leverage)
     # 随机选择一个多空方向
     if random.random() < globalVar['pivot']:
-        print('做多 ' + symbol + ' 量：' + quantity)
-        longOrderId = order(symbol, 'BUY', 'LONG', 'MARKET', quantity, '')['orderId']
-        price = getOrderPrice(symbol, longOrderId)
-        # 止损
-        stop_price = str(round(float(price) * (1 - stop_scope), 2))
-        res = order(symbol, 'SELL', 'LONG', 'STOP_MARKET', quantity, '', stop_price)
-        stop_orderId = res['orderId']
-        status = res['status']
-        if status == 'NEW':
-            # 止盈
-            take_profit_price = str(round(float(price) * (1 + take_profit_scope), 2))
-            take_profit_orderId = order(symbol, 'SELL', 'LONG', 'LIMIT', quantity, take_profit_price)['orderId']
-            globalVar['orderMap'][take_profit_orderId] = stop_orderId
-            globalVar['orderMap'][stop_orderId] = take_profit_orderId
+        long(symbol, quantity, take_profit_scope, stop_scope)
     else:
-        print('做空 ' + symbol + ' 量：' + quantity)
-        shortOrderId = order(symbol, 'SELL', 'SHORT', 'MARKET', quantity, '')['orderId']
-        price = getOrderPrice(symbol, shortOrderId)
-        # 止损
-        stop_price = str(round(float(price) * (1 + stop_scope), 2))
-        res = order(symbol, 'BUY', 'SHORT', 'STOP_MARKET', quantity, '', stop_price)
-        stop_orderId = res['orderId']
-        status = res['status']
-        if status == 'NEW':
-            # 止盈
-            take_profit_price = str(round(float(price) * (1 - take_profit_scope), 2))
-            take_profit_orderId = order(symbol, 'BUY', 'SHORT', 'LIMIT', quantity, take_profit_price)['orderId']
-            globalVar['orderMap'][take_profit_orderId] = stop_orderId
-            globalVar['orderMap'][stop_orderId] = take_profit_orderId
+        short(symbol, quantity, take_profit_scope, stop_scope)
 
 
+def long(symbol, quantity, take_profit_scope, stop_scope):
+    print('做多 ' + symbol + ' 量：' + quantity)
+    longOrderId = order(symbol, 'BUY', 'LONG', 'MARKET', quantity, '')['orderId']
+    price = getOrderPrice(symbol, longOrderId)
+    # 止损
+    stop_price = str(round(float(price) * (1 - stop_scope), 2))
+    res = order(symbol, 'SELL', 'LONG', 'STOP_MARKET', quantity, '', stop_price)
+    stop_orderId = res['orderId']
+    status = res['status']
+    if status == 'NEW':
+        # 止盈
+        take_profit_price = str(round(float(price) * (1 + take_profit_scope), 2))
+        take_profit_orderId = order(symbol, 'SELL', 'LONG', 'LIMIT', quantity, take_profit_price)['orderId']
+        globalVar['orderMap'][take_profit_orderId] = stop_orderId
+        globalVar['orderMap'][stop_orderId] = take_profit_orderId
 
 
+def short(symbol, quantity, take_profit_scope, stop_scope):
+    print('做空 ' + symbol + ' 量：' + quantity)
+    shortOrderId = order(symbol, 'SELL', 'SHORT', 'MARKET', quantity, '')['orderId']
+    price = getOrderPrice(symbol, shortOrderId)
+    # 止损
+    stop_price = str(round(float(price) * (1 + stop_scope), 2))
+    res = order(symbol, 'BUY', 'SHORT', 'STOP_MARKET', quantity, '', stop_price)
+    stop_orderId = res['orderId']
+    status = res['status']
+    if status == 'NEW':
+        # 止盈
+        take_profit_price = str(round(float(price) * (1 - take_profit_scope), 2))
+        take_profit_orderId = order(symbol, 'BUY', 'SHORT', 'LIMIT', quantity, take_profit_price)['orderId']
+        globalVar['orderMap'][take_profit_orderId] = stop_orderId
+        globalVar['orderMap'][stop_orderId] = take_profit_orderId
 
 
