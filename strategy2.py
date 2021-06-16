@@ -88,7 +88,6 @@ def short(symbol, quantity, take_profit_scope, stop_scope):
 def loop():
     def run():
         while True:
-            time.sleep(random.random() * 5 * 60)
             if globalVar['piece'] > 0:
                 data = getKline(symbol, interval)
                 res = macdjincha(data)
@@ -98,5 +97,6 @@ def loop():
                 elif res == 'down':
                     short(symbol, quantity, take_profit_scope, stop_scope)
                     globalVar['piece'] -= 1
+            time.sleep(5 * 60)
 
     thread.start_new_thread(run, ())
