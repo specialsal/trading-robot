@@ -45,7 +45,7 @@ def dealMsg(message):
         globalVar['balance'] = float(message['a']['B'][0]['wb'])
 
 
-def long(symbol, quantity, take_profit_scope, stop_scope):
+def long(symbol, quantity, take_profit_scope=0.03, stop_scope=0.03):
     msg = '做多 ' + symbol + ' 量：' + quantity
     print(msg)
     notifyService = NotifyService(msg)
@@ -65,7 +65,7 @@ def long(symbol, quantity, take_profit_scope, stop_scope):
         globalVar['orderMap'][stop_orderId] = take_profit_orderId
 
 
-def short(symbol, quantity, take_profit_scope, stop_scope):
+def short(symbol, quantity, take_profit_scope=0.03, stop_scope=0.03):
     msg = '做空 ' + symbol + ' 量：' + quantity
     print(msg)
     notifyService = NotifyService(msg)
@@ -92,10 +92,10 @@ def loop():
                 data = getKline(symbol, interval)
                 res = macdjincha(data)
                 if res == 'up':
-                    long(symbol, quantity, take_profit_scope, stop_scope)
+                    long(symbol, '0.02')
                     globalVar['piece'] -= 1
                 elif res == 'down':
-                    short(symbol, quantity, take_profit_scope, stop_scope)
+                    short(symbol, '0.02')
                     globalVar['piece'] -= 1
             time.sleep(5 * 60)
 
