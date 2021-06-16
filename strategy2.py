@@ -46,6 +46,7 @@ def dealMsg(message):
 
 
 def long(symbol, quantity, take_profit_scope=0.03, stop_scope=0.03):
+    level(symbol, leverage)
     msg = '做多 ' + symbol + ' 量：' + quantity
     print(msg)
     notifyService = NotifyService(msg)
@@ -66,6 +67,7 @@ def long(symbol, quantity, take_profit_scope=0.03, stop_scope=0.03):
 
 
 def short(symbol, quantity, take_profit_scope=0.03, stop_scope=0.03):
+    level(symbol, leverage)
     msg = '做空 ' + symbol + ' 量：' + quantity
     print(msg)
     notifyService = NotifyService(msg)
