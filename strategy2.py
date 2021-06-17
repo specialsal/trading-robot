@@ -45,7 +45,7 @@ def dealMsg(message):
         globalVar['balance'] = float(message['a']['B'][0]['wb'])
 
 
-def long(symbol, quantity, take_profit_scope=0.03, stop_scope=0.03):
+def long(symbol, quantity, take_profit_scope=0.03, stop_scope=0.015):
     level(symbol, leverage)
     msg = '做多 ' + symbol + ' 量：' + quantity
     print(msg)
@@ -66,7 +66,7 @@ def long(symbol, quantity, take_profit_scope=0.03, stop_scope=0.03):
         globalVar['orderMap'][stop_orderId] = take_profit_orderId
 
 
-def short(symbol, quantity, take_profit_scope=0.03, stop_scope=0.03):
+def short(symbol, quantity, take_profit_scope=0.03, stop_scope=0.015):
     level(symbol, leverage)
     msg = '做空 ' + symbol + ' 量：' + quantity
     print(msg)
