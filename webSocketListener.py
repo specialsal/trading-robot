@@ -3,7 +3,7 @@ import hashlib
 import websocket
 import requests
 from config import *
-from strategy1 import dealMsg
+from strategy2 import dealMsg
 
 
 def on_message(ws, message):
