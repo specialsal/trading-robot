@@ -99,6 +99,7 @@ def loop():
                 elif res == 'down':
                     short(symbol, '0.02')
                     globalVar['piece'] -= 1
+                time.sleep(15 * 60)
             time.sleep(5 * 60)
 
     thread.start_new_thread(run, ())
