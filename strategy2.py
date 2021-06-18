@@ -1,6 +1,5 @@
 # 这个策略是根据15分钟
 
-import random
 from notify import NotifyService
 from binanceApi import *
 from util import *
