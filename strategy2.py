@@ -93,13 +93,13 @@ def loop():
             if globalVar['piece'] > 0:
                 data = getKline(symbol, interval)
                 res = macdjincha(data)
-                if res == 'up':
-                    long(symbol, '0.02')
+                if res == 'up' or res == 'down':
+                    if res == 'up':
+                        long(symbol, '0.02')
+                    elif res == 'down':
+                        short(symbol, '0.02')
                     globalVar['piece'] -= 1
-                elif res == 'down':
-                    short(symbol, '0.02')
-                    globalVar['piece'] -= 1
-                time.sleep(15 * 60)
+                    time.sleep(15 * 60)
             time.sleep(5 * 60)
 
     thread.start_new_thread(run, ())
