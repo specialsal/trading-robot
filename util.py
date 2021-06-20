@@ -50,10 +50,10 @@ def macdjincha(data):
                                                  signalperiod=9)
     [MB, UP, LB, PB, BW] = getBoll(data)
     # 金叉或者死叉
-    if df['DIF'][-1] > df['DEM'][-1] and df['DIF'][-2] < df['DEM'][-2] and float(data[-1][4]) < MB:
+    if df['DIF'][-1] - df['DEM'][-1] > 0.2 and df['DIF'][-2] - df['DEM'][-2] < -0.2 and float(data[-1][4]) < MB:
         return 'up'
-    elif (df['DIF'][-1] < df['DEM'][-1] and df['DIF'][
-        -2] > df['DEM'][-2] and float(data[-1][4]) > MB):
+    elif (df['DIF'][-1] - df['DEM'][-1] < -0.2 and df['DIF'][
+        -2] - df['DEM'][-2] > 0.2 and float(data[-1][4]) > MB):
         return 'down'
 
 
