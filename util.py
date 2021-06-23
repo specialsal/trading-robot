@@ -49,10 +49,10 @@ def macdjincha(data):
     df['DIF'], df['DEM'], df['D-M'] = talib.MACD(np.array(close), fastperiod=12, slowperiod=26,
                                                  signalperiod=9)
     # 金叉或者死叉
-    if df['DIF'][-1] - df['DEM'][-1] > 0.5 and df['DIF'][-2] - df['DEM'][-2] < -0.5:
+    if df['DIF'][-1] - df['DEM'][-1] > 0.25 and df['DIF'][-2] - df['DEM'][-2] < -0.25:
         return 'up'
-    elif df['DIF'][-1] - df['DEM'][-1] < -0.5 and df['DIF'][
-        -2] - df['DEM'][-2] > 0.5:
+    elif df['DIF'][-1] - df['DEM'][-1] < -0.25 and df['DIF'][
+        -2] - df['DEM'][-2] > 0.25:
         return 'down'
 
 

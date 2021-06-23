@@ -94,9 +94,9 @@ def loop():
                 res = macdjincha(data)
                 if res == 'up' or res == 'down':
                     if res == 'up':
-                        long(symbol, '0.02')
+                        long(symbol, '0.06')
                     elif res == 'down':
-                        short(symbol, '0.02')
+                        short(symbol, '0.06')
                     globalVar['piece'] -= 1
                     time.sleep(15 * 60)
             time.sleep(5 * 60)
