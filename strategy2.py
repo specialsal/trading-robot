@@ -1,4 +1,4 @@
-# 这个策略是根据15分钟
+# 这个策略是根据15分钟MACD金叉死叉来做多做空
 
 from notify import NotifyService
 from binanceApi import *
@@ -89,16 +89,16 @@ def short(symbol, quantity, take_profit_scope=0.03, stop_scope=0.01):
 def loop():
     def run():
         while True:
-            if globalVar['piece'] > 0:
-                data = getKline(symbol, interval)
-                res = macdjincha(data)
-                if res == 'up' or res == 'down':
-                    if res == 'up':
-                        long(symbol, '0.06')
-                    elif res == 'down':
-                        short(symbol, '0.06')
-                    globalVar['piece'] -= 1
-                    time.sleep(15 * 60)
+            data = getKline(symbol, interval)
+            res = macdjincha(data)
+            if res == 'up' or res == 'down':
+                deleteAllOrder(symbol)
+                deleteAllPosition(symbol)
+                if res == 'up':
+                    long(symbol, '0.06')
+                elif res == 'down':
+                    short(symbol, '0.06')
+                time.sleep(15 * 60)
             time.sleep(5 * 60)
 
     thread.start_new_thread(run, ())
